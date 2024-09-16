@@ -30,6 +30,9 @@ public class TCP extends Thread {
     BufferedReader in;
 
     HelloController fxmlCont;
+    String motdepasse="abcdefgh";
+    String iv = "hgfedcba";
+
 
     public TCP() {
     }
@@ -70,14 +73,14 @@ public class TCP extends Thread {
         }
     }
 
-    public void requette(String laRequette) throws IOException {
+    public void requette(String laRequette) throws IOException, InterruptedException {
         if (connection){
             if (laRequette.equalsIgnoreCase("exit")){
                 out.print(laRequette);
+                deconnection();
             } else {
                 out.println(laRequette);  // envoi reseau
             }
-
             System.out.println("la requette " + laRequette);
         }else {
             fxmlCont.TextAreaReponses.appendText("Pas de connextion Serveur:\n");
