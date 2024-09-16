@@ -61,6 +61,8 @@ public class HelloController implements Initializable {
                 envoyer();
             } catch (InterruptedException e) {
                 TextAreaReponses.appendText("Erreur lors de l'envoi : " + e.getMessage() + "\n");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         });
 
@@ -69,19 +71,11 @@ public class HelloController implements Initializable {
 
 
 
-    private void envoyer() throws InterruptedException {
+    private void envoyer() throws InterruptedException, IOException {
         String requette = TextFieldRequette.getText();
         if (enRun && !requette.isEmpty()) {
-            try {
-                if (requette.equalsIgnoreCase("exit")){
-                    deconnecter();
-                }else{
-                    tcp.requette(requette);
-                    TextAreaReponses.appendText("Requette envoyee"+requette+"\n");
-                }
-            } catch (IOException e) {
-                TextAreaReponses.appendText("Erreur d'envoi de la requête : " + e.getMessage() + "\n");
-            }
+            tcp.requette(requette);
+            TextAreaReponses.appendText("Requette envoyee : "+requette+"\n");
         } else {
             TextAreaReponses.appendText("Connexion non établie ou requête vide.\n");
         }

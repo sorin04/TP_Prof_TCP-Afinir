@@ -16,11 +16,6 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-
-
-import static javafx.scene.paint.Color.RED;
 
 /**
  * @author Michael
@@ -66,11 +61,10 @@ public class TCP extends Thread {
     public void deconnection() throws InterruptedException {
         marche = false;
         try {
-            if (socket !=null && socket.isClosed()) {
-                socket.close();
-                fxmlCont.voyant.setFill(Color.RED);
-                fxmlCont.TextAreaReponses.appendText("Déconecter du Serveur");
-            }
+            socket.close();
+            System.out.println(socket.isClosed());
+            fxmlCont.voyant.setFill(Color.RED);
+            fxmlCont.TextAreaReponses.appendText("Déconnecter du Serveur");
         } catch (IOException e) {
             fxmlCont.TextAreaReponses.appendText("Erreur lors de la déconnexion : " + e.getMessage() + "\n");
         }
@@ -78,8 +72,13 @@ public class TCP extends Thread {
 
     public void requette(String laRequette) throws IOException {
         if (connection){
-        out.println(laRequette);  // envoi reseau
-        System.out.println("la requette " + laRequette);
+            if (laRequette.equalsIgnoreCase("exit")){
+                out.print(laRequette);
+            } else {
+                out.println(laRequette);  // envoi reseau
+            }
+
+            System.out.println("la requette " + laRequette);
         }else {
             fxmlCont.TextAreaReponses.appendText("Pas de connextion Serveur:\n");
         }
@@ -92,15 +91,12 @@ public class TCP extends Thread {
             messageServer =in.readLine();
             if (messageServer != null) {
                 updateMessage(messageServer);
-
             }else {
                 marche = false;
-
             }
 
         }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (IOException ignored) {
         }
     }
 
